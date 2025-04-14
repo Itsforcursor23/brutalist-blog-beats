@@ -9,7 +9,7 @@ interface CommentListProps {
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   if (comments.length === 0) {
     return (
-      <div className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8">
+      <div className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8 animate-fade-in">
         <h3 className="text-2xl font-display mb-4">Comments</h3>
         <p className="text-neubrutalism-gray">No comments yet. Be the first to comment!</p>
       </div>
@@ -17,7 +17,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
   }
 
   return (
-    <div className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8">
+    <div className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8 animate-fade-in">
       <h3 className="text-2xl font-display mb-6">
         Comments ({comments.length})
       </h3>
@@ -27,15 +27,16 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
           <div 
             key={comment.id} 
             className={`
-              flex gap-4 pb-6
+              flex gap-4 pb-6 animate-fade-in hover:bg-neubrutalism-light/30 p-2 transition-colors
               ${index < comments.length - 1 ? 'border-b-2 border-dashed border-neubrutalism-gray/30' : ''}
             `}
+            style={{ animationDelay: `${index * 100}ms` }}
           >
             <div className="flex-shrink-0">
               <img
                 src={comment.avatar}
                 alt={comment.author}
-                className="w-10 h-10 rounded-full border-2 border-neubrutalism-dark"
+                className="w-10 h-10 rounded-full border-2 border-neubrutalism-dark hover:rotate-3 transition-transform"
               />
             </div>
             

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Category } from '@/lib/mockData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CategoryFilterProps {
   categories: Category[];
@@ -13,8 +14,31 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   selectedCategory, 
   onChange 
 }) => {
+  const isMobile = useIsMobile();
+  
+  // For mobile: render a select dropdown
+  if (isMobile) {
+    return (
+      <div className="mb-8 animate-fade-in">
+        <select 
+          value={selectedCategory || ''} 
+          onChange={(e) => onChange(e.target.value === '' ? null : e.target.value)}
+          className="neu-input w-full p-3 font-bold"
+        >
+          <option value="">All Posts</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+  
+  // For desktop: render buttons
   return (
-    <div className="flex flex-wrap gap-3 mb-8">
+    <div className="flex flex-wrap gap-3 mb-8 animate-fade-in">
       <button
         onClick={() => onChange(null)}
         className={`
@@ -32,7 +56,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           key={category.id}
           onClick={() => onChange(category.id)}
           className={`
-            px-4 py-2 border-2 border-neubrutalism-dark font-bold text-sm transition-all
+            px-4 py-2 border-2 border-neubrutalism-dark font-bold text-sm transition-all hover:animate-wiggle
             ${selectedCategory === category.id 
               ? 'bg-neubrutalism-teal text-white transform translate-y-[-2px] translate-x-[-2px] shadow-brutal' 
               : 'bg-white hover:bg-neubrutalism-light'}

@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { Comment } from '@/lib/mockData';
 
 interface CommentFormProps {
   postId: string;
@@ -28,8 +29,29 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onCommentAdded }) => 
     
     setIsSubmitting(true);
     
+    // Create a new comment object
+    const newComment: Comment = {
+      id: `comment-${Date.now()}`,
+      postId,
+      author: name,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+      content: comment,
+      createdAt: new Date().toISOString(),
+    };
+    
     // Simulate API call
     setTimeout(() => {
+      // Find the post in localStorage or create initial storage
+      const storedComments = localStorage.getItem('blog-comments');
+      const commentsMap = storedComments ? JSON.parse(storedComments) : {};
+      
+      // Update or initialize comments array for this post
+      const postComments = commentsMap[postId] || [];
+      commentsMap[postId] = [newComment, ...postComments];
+      
+      // Save back to localStorage
+      localStorage.setItem('blog-comments', JSON.stringify(commentsMap));
+      
       toast({
         title: "Comment submitted!",
         description: "Your comment has been added to this post."
@@ -44,7 +66,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onCommentAdded }) => 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8">
+    <form onSubmit={handleSubmit} className="bg-white border-4 border-neubrutalism-dark shadow-brutal p-6 mb-8 animate-fade-in">
       <h3 className="text-2xl font-display mb-4">Leave a Comment</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -93,7 +115,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onCommentAdded }) => 
       
       <button 
         type="submit" 
-        className="neu-button"
+        className="neu-button hover:animate-wiggle"
         disabled={isSubmitting}
       >
         {isSubmitting ? 'Submitting...' : 'Post Comment'}
